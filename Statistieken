@@ -1,0 +1,61 @@
+Template = Nummer: S(insert kaarten speler) D(insert kaarten dealer) W, D of L (Win, Draw of Loss)
+
+//altijd 1 keer hitten  |  2-W 1-D 7-L
+1: S(8,2,2) D(2,9,K) L
+2: S(A,5,K) D(4,Q,9) W
+3: S(9,8,10) D(5) L 
+4: S(6,4,9) D(9,10) D
+5: S(5,10,5) D(8,10) W
+6: S(4,6,7) D(3,4,3,10) L
+7: S(10,10,8) D(4) L 
+8: S(2,4,3) D(9,J) L
+9: S(7,10,9) D(6) L 
+10: S(Q,9,10) D(10) L
+
+//alleen 1 keer hitten als je onder de 16 zit  |  4-W 3-D 3-L
+11: S(5,Q,2) D(9,8) D
+12: S(9,A) D(J,K) D
+13: S(2,J,7) D(J,10) L
+14: S(3,A,7) D(J,10) W
+15: S(8,9) D(9,3,3,7) W
+16: S(7,7,6) D(3,7,J) D
+17: S(9,A) D(A,10) L
+18: S(9,2,A,Q) D(7) L
+19: S(7,J) D(8,5,2,J) W
+20: S(A,9) D(A,6) W
+
+//hitten tot je boven de 14 zit  |  3-W 2-D 5-L
+21: S(8,J) D(5,8,3,3) L
+22: S(K,4,10) D(3) L
+23: S(Q,4,K) D(10) L
+24: S(4,7,K) D(8,4,K) W
+25: S(7,9) D(10,8) L
+26: S(6,5,K) D(4,4,Q) W
+27: S(Q,8) D(Q,6,5) L
+28: S(10,Q) D(8,5,7) D
+29: S(K,7) D(4,K,3) D
+30: S(5,J) D(5,Q,K) W
+
+//hitten tot je boven de 15 zit  |  2-W 1-D 7-L 
+31: S(5,9,9) D(10) L
+32: S(7,7,J) D(4) L 
+33: S(A,4,3) D(10,9) L
+34: S(4,9,2,3) D(Q,9) L
+35: S(6,J) D(5,2,7) L
+36: S(3,2,5,Q) D(5,7,10) W 
+37: S(4,J,K) D(10) L
+38: S(10,10) D(2,8,K) D
+39: S(8,3,5) D(10,J) L
+40: S(Q,10) D(2,5,2,9) W
+
+//hitten tot je boven de 17 zit  |  3-W 1-D 6-L
+41: S(A,2,2,8,8) D(8,Q) W
+42: S(6,8,7) D(6,8,J) W
+43: S(8,3,3,6) D(5,4,3,3,6) L
+44: S(2,2,5,4,10) D(J) L
+45: S(A,4,2,8) D(4) L
+46: S(A,6,5,9) D(7,K) W
+47: S(K,2,3,6) D(8,6,7) D
+48: S(5,4,10) D(5,A,5) L
+49: S(Q,4,4) D(A,9) L
+50: S(J,5) D(8) L
