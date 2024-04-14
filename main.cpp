@@ -33,9 +33,9 @@ String checkSerialInput() {
           Serial.println("Invalid command");
         }
         exitLoop = true;
-      } else if (incomingChar != '\r') { // Ignore carriage return ('\r')
+      } else if (incomingChar != '\r') { 
         commandBuffer +=
-            incomingChar; // Append the character to the command buffer
+            incomingChar;
       }
     }
   return commandBuffer;

@@ -54,10 +54,6 @@ void Game::startGame()
       gameFinished = true;
       spelers.front()->setTotaleInzet(spelers.front()->getTotaleInzet() +
                                       spelers.front()->getInzet() * 2);
-      // Serial.println("[" + spelers.front()->getNaam() + "] - Jouw totale
-      // inzetpot bestaat nu uit €" +
-      // std::to_string(spelers.front()->getTotaleInzet())
-      //           + ".\n".c_str());
       Serial.println(("[" + spelers.front()->getNaam() +
                       "] - Jouw totale inzetpot bestaat nu uit €" +
                       std::to_string(spelers.front()->getTotaleInzet()) + ".\n")
@@ -164,7 +160,6 @@ std::shared_ptr<Card> Game::trekKaart()
   { // Ga door tot je een kaart vindt die
     // nog niet opgegooid is.
     randomNummer = rand() % getTotalPlayingCards();
-    // Serial.println("randomnummer: " + randomNummer);
     gekozenKaart = speelkaarten[randomNummer];
   }
 
@@ -370,6 +365,10 @@ void Game::setSpeler()
 void Game::processInput(const std::string userInput)
 {
   std::string input = userInput;
+  int length = input.length();
+  if (std::isspace(input[length - 1])) {
+    input.pop_back(); // Als er een enter of een andere whitespace gebruikt is in de input, verwijder deze.
+  }
 
   for (char &c : input)
   {
@@ -513,17 +512,18 @@ void Game::vraagVoorInput()
   Serial.println("[Game] - Kies nu wat je wilt doen met deze kaarten, de keuze "
                  "bestaat uit: Hit 'H',  Stand 'S', Double 'D' of Split 'SPL'. "
                  "Type Help voor hulp.");
-while(true){
-  if (Serial.available() > 0)
+  while (true)
   {
-    SerialInput = Serial.readStringUntil('\n');
-    std::string input =
-        SerialInput
-            .c_str(); // Convert de arduino input string naar een c-string.
-    processInput(input);
-    break;
+    if (Serial.available() > 0)
+    {
+      SerialInput = Serial.readStringUntil('\n');
+      std::string input =
+          SerialInput
+              .c_str(); // Convert de arduino input string naar een c-string.
+      processInput(input);
+      break;
+    }
   }
-}
 }
 
 uint16_t Game::processDealerEinde()
