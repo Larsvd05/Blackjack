@@ -8,6 +8,7 @@
 #include "Card.h"
 #include "Dealer.h"
 #include "Player.h"
+#include "LCD_screen.h"
 #include <cstdint>
 #include <ctime>
 #include <iostream>
