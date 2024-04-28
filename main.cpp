@@ -3,12 +3,14 @@
 // Last update on 12/04/2024
 //
 #include <Arduino.h>
-#include <iostream>
 #include <Wire.h>
+#include <iostream>
 
 #include "Game.h"
+#include "LCD_screen.h"
 
-/* Pinnen voor de LCD display: GND -> GND, VCC -> VIN, SDA -> D21 en SCL -> D22.*/
+/* Pinnen voor de LCD display: GND -> GND, VCC -> VIN, SDA -> D21 en SCL ->
+ * D22.*/
 
 int main() {
   Game game;
@@ -21,7 +23,6 @@ void setup() {
   Serial.begin(115200);
   Init_LCD_scherm();
   clearLCD();
-  printLCD_String(0,0, "Hello world");
   main();
 }
 

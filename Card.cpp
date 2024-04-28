@@ -18,6 +18,19 @@ void Card::setNaam(const std::string &aNaam) { naam = aNaam; }
 
 const std::string &Card::getVorm() const { return vorm; }
 
+const byte Card::getLCD_Vorm() const {
+  if (Card::getVorm() == "♥") {
+    return 0;
+  } else if (Card::getVorm() == "♦") {
+    return 1;
+  } else if (Card::getVorm() == "♠") {
+    return 2;
+  } else if (Card::getVorm() == "♣") {
+    return 3;
+  }
+  return 0;
+}
+
 void Card::setVorm(const std::string &aVorm) { vorm = aVorm; }
 
 bool Card::isAlOpgegooid() const { return alOpgegooid; }

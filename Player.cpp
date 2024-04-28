@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "LCD_screen.h"
 #include <Arduino.h>
 #include <string>
 
@@ -16,8 +17,14 @@ const std::string &Player::getNaam() const { return naam; }
 void Player::setNaam(std::string &aNaam) { naam = aNaam; }
 
 void Player::printKaarten() {
+  byte locatie = naam.length() + 1;
   for (auto kaart : kaarten) {
     Serial.print((" " + kaart->toText() + " ").c_str());
+    ++locatie;
+    printLCD_SpecialChar(1, locatie, kaart->getLCD_Vorm());
+    ++locatie;
+    printLCD_String(1, locatie, kaart->getNaam().c_str());
+    ++locatie;
   }
 }
 

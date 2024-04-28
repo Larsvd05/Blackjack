@@ -5,6 +5,7 @@
 #ifndef BLACKJACK_CARD_H
 #define BLACKJACK_CARD_H
 
+#include <Arduino.h>
 #include <cstdint>
 #include <string>
 
@@ -18,6 +19,7 @@ public:
   const std::string &getNaam() const;
   void setNaam(const std::string &aNaam);
   const std::string &getVorm() const;
+  const byte getLCD_Vorm() const;
   void setVorm(const std::string &aVorm);
   bool isAlOpgegooid() const;
   void setAlOpgegooid(bool aAlOpgegooid);

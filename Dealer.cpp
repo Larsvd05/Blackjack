@@ -2,13 +2,24 @@
 // Created by lars on 19/01/24.
 //
 #include "Dealer.h"
+#include "LCD_screen.h"
 #include <string>
 
 Dealer::Dealer() {}
 
 void Dealer::printKaarten() {
+  byte locatie = 7; // Want dealer is altijd dezelfde lengte.
   for (auto kaart : kaarten) {
-    std::cout << " " + kaart->toText() + " ";
+    if (locatie == 16) {
+      lcd.autoscroll();
+    }
+    Serial.print((" " + kaart->toText() + " ").c_str());
+    ++locatie;
+    printLCD_SpecialChar(1, locatie, kaart->getLCD_Vorm());
+    ++locatie;
+    printLCD_String(1, locatie, kaart->getNaam().c_str());
+    ++locatie;
+    ++locatie;
   }
 }
 
