@@ -8,31 +8,31 @@
 Dealer::Dealer() {}
 
 void Dealer::printKaarten() {
-  byte locatie = 7; // Want dealer is altijd dezelfde lengte.
+  // byte locatie = 7; // Want "Dealer:" is altijd dezelfde lengte.
   for (auto kaart : kaarten) {
-    if (locatie == 16) {
-      lcd.autoscroll();
-    }
     Serial.print((" " + kaart->toText() + " ").c_str());
-    ++locatie;
-    printLCD_SpecialChar(1, locatie, kaart->getLCD_Vorm());
-    ++locatie;
-    printLCD_String(1, locatie, kaart->getNaam().c_str());
-    ++locatie;
-    ++locatie;
+    // ++locatie;
+    // printLCD_SpecialChar(1, locatie, kaart->getLCD_Vorm());
+    // ++locatie;
+    // printLCD_String(1, locatie, kaart->getNaam().c_str());
+    // ++locatie;
+    // ++locatie;
   }
 }
 
 void Dealer::addKaart(std::shared_ptr<Card> aKaart, bool printKaart) {
   kaarten.emplace_back(aKaart);
   if (printKaart) {
-    std::cout << "[Dealer] - De dealer heeft een " + aKaart->toText() +
-                     " getrokken!"
-              << std::endl;
+        Serial.println(
+        ("[Dealer] - De dealer heeft een " + aKaart->toText() +
+                     " getrokken!\n").c_str());
   } else {
-    std::cout << "[Dealer] - De dealer heeft een geheime kaart getrokken!"
-              << std::endl;
+            Serial.println(
+        ("[Dealer] - De dealer heeft een geheime kaart getrokken!\n"));
   }
+  // TODO dit moet verwerkt worden zodat de tweede kaart van de dealer geheim blijft, want nu is hij niet geheim 
+  LCD_addKaartDealer(aKaart);
+  LCD_printKaarten();
 }
 
 void Dealer::resetKaarten() { kaarten.clear(); }

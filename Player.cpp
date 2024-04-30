@@ -20,13 +20,30 @@ void Player::printKaarten() {
   byte locatie = naam.length() + 1;
   for (auto kaart : kaarten) {
     Serial.print((" " + kaart->toText() + " ").c_str());
-    ++locatie;
-    printLCD_SpecialChar(1, locatie, kaart->getLCD_Vorm());
-    ++locatie;
-    printLCD_String(1, locatie, kaart->getNaam().c_str());
-    ++locatie;
+    // ++locatie;
+    // printLCD_SpecialChar(1, locatie, kaart->getLCD_Vorm());
+    // ++locatie;
+    // printLCD_String(1, locatie, kaart->getNaam().c_str());
+    // ++locatie;
   }
 }
+
+// void Player::printKaarten() {
+//   byte locatie = naam.length() + 1;
+//   bool teVeelKaarten = false;
+//   for (auto kaart : kaarten) {
+//     Serial.print((" " + kaart->toText() + " ").c_str());
+//     if(teVeelKaarten){
+//     if(locatie){}
+//     ++locatie;
+//     printLCD_SpecialChar(1, locatie, kaart->getLCD_Vorm());
+//     ++locatie;
+//     printLCD_String(1, locatie, kaart->getNaam().c_str());
+//     ++locatie;
+//   }
+//   }
+// }
+
 
 bool Player::checkFor21() {
   uint16_t totaleWaardeKaarten = 0;
@@ -53,6 +70,8 @@ void Player::addKaart(std::shared_ptr<Card> aKaart, bool print) {
         ("[" + naam + "] - Je hebt een " + aKaart->toText() + " getrokken!\n")
             .c_str());
   }
+    LCD_addKaartSpeler(aKaart);
+    LCD_printKaarten();
 }
 
 void Player::resetKaarten() { kaarten.clear(); }

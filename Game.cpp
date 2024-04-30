@@ -10,11 +10,10 @@
 
 Game::Game() {
   auto currentTime = std::chrono::high_resolution_clock::now();
-  auto seed = std::chrono::duration_cast<std::chrono::milliseconds>(
+  auto seed = std::chrono::duration_cast<std::chrono::seconds>(
                   currentTime.time_since_epoch())
                   .count();
-  srand(
-      seed); // Seed de random generator met de huidige tijd van milli secondes.
+  srand(seed); // Seed de random generator met de huidige tijd van milli secondes.
 }
 
 void Game::run() {
@@ -28,6 +27,9 @@ void Game::run() {
 
 void Game::startGame() {
   clearLCD();
+  LCD_printKaarten();
+  LCD_clearSpeler();
+  LCD_clearDealer();
   printLCD_String(0, 0, "Dealer:");
   printLCD_String(1, 0, (spelers.front()->getNaam() + ":").c_str());
   printLCD_String(
@@ -36,6 +38,7 @@ void Game::startGame() {
           .c_str()); // Convert de inzet van een int naar een std::string en
                      // daarna naar een String.
   vraagInput(1);
+  LCD_printKaarten();
   if (!gameFinished) {
     clearLCD();
     printLCD_String(0, 0, "Dealer:");
@@ -52,6 +55,7 @@ void Game::startGame() {
     dealer->addKaart(kaart, true);
     kaart = trekKaart();
     spelers.front()->addKaart(kaart, true);
+    LCD_printKaarten();
     if (spelers.front()->getWaardeKaarten() > 21 &&
         spelers.front()->checkForAce()) {
       spelers.front()->setWaardeKaart("A", 1);
@@ -75,21 +79,21 @@ void Game::startGame() {
       kaart = trekKaart();
       dealer->addKaart(kaart);
           kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
-        kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
-        kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
-        kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
-        kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
-        kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
-        kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
-        kaart = trekKaart();
-    spelers.front()->addKaart(kaart, true);
+    // spelers.front()->addKaart(kaart, true);
+    //     kaart = trekKaart();
+    // spelers.front()->addKaart(kaart, true);
+    //     kaart = trekKaart();
+    // spelers.front()->addKaart(kaart, true);
+    //     kaart = trekKaart();
+    // spelers.front()->addKaart(kaart, true);
+    //     kaart = trekKaart();
+    // spelers.front()->addKaart(kaart, true);
+    //     kaart = trekKaart();
+    // spelers.front()->addKaart(kaart, true);
+    //     kaart = trekKaart();
+    // spelers.front()->addKaart(kaart, true);
+    //     kaart = trekKaart();
+    // spelers.front()->addKaart(kaart, true);
       Serial.print(
           ("[" + spelers.front()->getNaam() + "] - Jouw kaarten zijn: ")
               .c_str());
@@ -99,6 +103,7 @@ void Game::startGame() {
                          .c_str());
 
       while (!gameFinished && !stopGame) {
+        LCD_printKaarten();
         vraagVoorInput();
       }
     }
@@ -335,6 +340,7 @@ void Game::setSpeler() {
   std::string naamSpeler = "Lars";
   //    Serial.println( << "[Input] - Vul hier uw speelnaam in: ";
   //    getline(std::cin, naamSpeler);
+  LCD_setLengteSpelerNaam(naamSpeler.length());
   addSpeler(naamSpeler);
   Serial.println(("[Game] - U bent succesvol in het spel gezet met de naam " +
                   naamSpeler + "!")
@@ -433,7 +439,7 @@ void Game::processInput(const std::string userInput) {
   } else if (input == "split" || input == "spl") {
   } else if (input == "help" || input == "hel") {
     Serial.println(
-        "[Help] - Je hebt nu de keuze om te Hitten ('H'), Standen ('S'), "
+        "\n[Help] - Je hebt nu de keuze om te Hitten ('H'), Standen ('S'), "
         "Verdubbelen ('D'), Splitten ('SPL') of Stoppen ('STP')\n"
         "[Hit] - Speler pakt een nieuwe kaart en kan hierna opnieuw kiezen wat "
         "hij gaat doen.\n"
