@@ -27,6 +27,7 @@ public:
   void run();
   void startGame();
   void stop();
+  void seedRandomGenerator();
 
   uint16_t getTotalPlayingCards();
   const std::vector<std::shared_ptr<Card>> &getSpeelkaarten() const;

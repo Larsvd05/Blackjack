@@ -26,5 +26,8 @@ byte LCD_getAchtersteLocatieDealer();
 byte LCD_getAchtersteLocatieSpeler();
 void LCD_clearSpeler();
 void LCD_clearDealer();
+void LCD_printGewonnen();
+void LCD_printVerloren();
+void LCD_printGelijkspel();
 
 #endif

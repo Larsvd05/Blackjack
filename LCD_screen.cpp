@@ -211,3 +211,16 @@ void LCD_clearDealer(){
     dealerKaartenArray[i] = '\0';
   }
 }
+
+void LCD_printGewonnen(){
+  printLCD_String(2, 0, "----Gewonnen :D-----");
+}
+
+void LCD_printVerloren(){
+  printLCD_String(2, 0, "----Verloren :(-----");
+}
+
+void LCD_printGelijkspel(){
+    printLCD_String(2, 0, "---Gelijkspel :/----");
+}
+

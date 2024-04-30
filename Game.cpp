@@ -9,24 +9,29 @@
 #include <memory>
 
 Game::Game() {
-  auto currentTime = std::chrono::high_resolution_clock::now();
-  auto seed = std::chrono::duration_cast<std::chrono::seconds>(
-                  currentTime.time_since_epoch())
-                  .count();
+  seedRandomGenerator();
+}
+
+void Game::seedRandomGenerator(){
+  auto currentTime = std::chrono::system_clock::now();
+  auto timeSinceEpoch = currentTime.time_since_epoch();
+  auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceEpoch).count();
+  auto minutes = std::chrono::duration_cast<std::chrono::minutes>(timeSinceEpoch).count();
+  
+  unsigned int seed = static_cast<unsigned int>(milliseconds);
   srand(seed); // Seed de random generator met de huidige tijd van milli secondes.
 }
 
 void Game::run() {
   vraagInput(0);
   while (!stopGame) {
-    startGame();
-    generateSpeelkaarten();
     resetGame();
+    startGame();
+    generateSpeelkaarten(); // Deze is in de setup ook al uitgevoerd
   }
 }
 
 void Game::startGame() {
-  clearLCD();
   LCD_printKaarten();
   LCD_clearSpeler();
   LCD_clearDealer();
@@ -150,6 +155,20 @@ void Game::resetGame() {
   for (auto kaart : speelkaarten) {
     kaart->setAlOpgegooid(false);
   }
+  uint16_t waardeKaartenSpeler = spelers.front()->getWaardeKaarten();
+  uint16_t waardeKaartenDealer = dealer->getWaardeKaarten();
+  clearLCD();
+  if(waardeKaartenSpeler > waardeKaartenDealer && waardeKaartenSpeler <= 21){
+    LCD_printGewonnen();
+  } else if(waardeKaartenDealer > 21){
+        LCD_printGewonnen();
+  } else if(spelers.front()->getWaardeKaarten() == dealer->getWaardeKaarten()){
+    LCD_printGelijkspel();
+  } else if(waardeKaartenSpeler < waardeKaartenDealer && waardeKaartenDealer <= 21){
+    LCD_printVerloren();
+  } else {
+    LCD_printVerloren();
+  } 
   for (auto speler : spelers) {
     speler->resetKaarten();
   }
@@ -164,6 +183,7 @@ void Game::printSpelers() {
 }
 
 std::shared_ptr<Card> Game::trekKaart() {
+  seedRandomGenerator();
   if (getTotalPlayingCards() == 0) {
     Serial.println("[Game-Error] - Er zijn geen kaarten meer in de pot!");
     return nullptr; // Geen kaarten meer om te trekken
@@ -171,14 +191,14 @@ std::shared_ptr<Card> Game::trekKaart() {
   uint16_t randomNummer;
   randomNummer = rand() % getTotalPlayingCards();
   std::shared_ptr<Card> gekozenKaart;
-  gekozenKaart = speelkaarten.at(randomNummer);
+  // gekozenKaart = speelkaarten.at(randomNummer);
+  gekozenKaart = speelkaarten[randomNummer];
 
-  while (gekozenKaart->isAlOpgegooid()) { // Ga door tot je een kaart vindt die
-    // nog niet opgegooid is.
+  while (gekozenKaart->isAlOpgegooid()) { // Ga door tot je een kaart vindt die nog niet opgegooid is.
     randomNummer = rand() % getTotalPlayingCards();
     gekozenKaart = speelkaarten[randomNummer];
   }
-
+  gekozenKaart->setAlOpgegooid(true);
   return gekozenKaart;
 }
 
@@ -407,6 +427,7 @@ void Game::processInput(const std::string userInput) {
           spelers.front()->checkForAce()) {
         spelers.front()->setWaardeKaart("A", 1);
       } else if (spelers.front()->getWaardeKaarten() > 21) {
+        LCD_printVerloren();
         Serial.println(
             ("[" + spelers.front()->getNaam() +
              "] - Je hebt helaas verloren met een totale waarde van " +
@@ -496,6 +517,7 @@ uint16_t Game::processDealerEinde() {
       dealer->addKaart(kaart, true);
     } else if (waardeKaartenDealer >= 17 && waardeKaartenDealer <= 21) {
       if (waardeKaartenDealer > spelers.front()->getWaardeKaarten()) {
+        LCD_printVerloren();
         Serial.print(
             "\n[Game] - De dealer heeft gewonnen met de volgende kaarten: ");
         dealer->printKaarten();
@@ -508,6 +530,7 @@ uint16_t Game::processDealerEinde() {
         spelers.front()->setInzet(0);
         gameFinished = true;
       } else if (waardeKaartenDealer < spelers.front()->getWaardeKaarten()) {
+        LCD_printGewonnen();
         Serial.println(("\n[Game] - Dit geeft een waarde van " +
                         std::to_string(spelers.front()->getWaardeKaarten()) +
                         " in vergelijking met de waarde " +
@@ -522,6 +545,7 @@ uint16_t Game::processDealerEinde() {
                                         (spelers.front()->getInzet() * 2));
         gameFinished = true;
       } else {
+        LCD_printGelijkspel();
         Serial.println("\n[Game] - Gelijkspel");
         spelers.front()->setTotaleInzet(spelers.front()->getTotaleInzet() +
                                         (spelers.front()->getInzet()));
@@ -529,6 +553,7 @@ uint16_t Game::processDealerEinde() {
         gameFinished = true;
       }
     } else if (waardeKaartenDealer > 21) {
+      LCD_printGewonnen();
       Serial.print("\n[Game] - De speler heeft gewonnen omdat de dealer over "
                    "de 21 is gegaan met de volgende kaarten:");
       dealer->printKaarten();
