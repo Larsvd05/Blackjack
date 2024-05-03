@@ -43,4 +43,3 @@ std::string Card::toString() {
 }
 
 std::string Card::toText() { return vorm + naam; }
-

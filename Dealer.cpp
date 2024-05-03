@@ -23,16 +23,16 @@ void Dealer::printKaarten() {
 void Dealer::addKaart(std::shared_ptr<Card> aKaart, bool printKaart) {
   kaarten.emplace_back(aKaart);
   if (printKaart) {
-        Serial.println(
-        ("[Dealer] - De dealer heeft een " + aKaart->toText() +
-                     " getrokken!\n").c_str());
+    Serial.println(
+        ("[Dealer] - De dealer heeft een " + aKaart->toText() + " getrokken!\n")
+            .c_str());
   } else {
-            Serial.println(
+    Serial.println(
         ("[Dealer] - De dealer heeft een geheime kaart getrokken!\n"));
   }
-  // TODO dit moet verwerkt worden zodat de tweede kaart van de dealer geheim blijft, want nu is hij niet geheim 
+  // TODO dit moet verwerkt worden zodat de tweede kaart van de dealer geheim
+  // blijft, want nu is hij niet geheim
   LCD_addKaartDealer(aKaart);
-  LCD_printKaarten();
 }
 
 void Dealer::resetKaarten() { kaarten.clear(); }

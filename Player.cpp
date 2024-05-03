@@ -44,7 +44,6 @@ void Player::printKaarten() {
 //   }
 // }
 
-
 bool Player::checkFor21() {
   uint16_t totaleWaardeKaarten = 0;
   bool result = false;
@@ -70,8 +69,7 @@ void Player::addKaart(std::shared_ptr<Card> aKaart, bool print) {
         ("[" + naam + "] - Je hebt een " + aKaart->toText() + " getrokken!\n")
             .c_str());
   }
-    LCD_addKaartSpeler(aKaart);
-    LCD_printKaarten();
+  LCD_addKaartSpeler(aKaart);
 }
 
 void Player::resetKaarten() { kaarten.clear(); }

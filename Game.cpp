@@ -8,18 +8,20 @@
 #include <cmath>
 #include <memory>
 
-Game::Game() {
-  seedRandomGenerator();
-}
+Game::Game() { seedRandomGenerator(); }
 
-void Game::seedRandomGenerator(){
+void Game::seedRandomGenerator() {
   auto currentTime = std::chrono::system_clock::now();
   auto timeSinceEpoch = currentTime.time_since_epoch();
-  auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceEpoch).count();
-  auto minutes = std::chrono::duration_cast<std::chrono::minutes>(timeSinceEpoch).count();
-  
+  auto milliseconds =
+      std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceEpoch)
+          .count();
+  auto minutes =
+      std::chrono::duration_cast<std::chrono::minutes>(timeSinceEpoch).count();
+
   unsigned int seed = static_cast<unsigned int>(milliseconds);
-  srand(seed); // Seed de random generator met de huidige tijd van milli secondes.
+  srand(
+      seed); // Seed de random generator met de huidige tijd van milli secondes.
 }
 
 void Game::run() {
@@ -32,9 +34,7 @@ void Game::run() {
 }
 
 void Game::startGame() {
-  LCD_printKaarten();
-  LCD_clearSpeler();
-  LCD_clearDealer();
+
   printLCD_String(0, 0, "Dealer:");
   printLCD_String(1, 0, (spelers.front()->getNaam() + ":").c_str());
   printLCD_String(
@@ -43,7 +43,8 @@ void Game::startGame() {
           .c_str()); // Convert de inzet van een int naar een std::string en
                      // daarna naar een String.
   vraagInput(1);
-  LCD_printKaarten();
+  LCD_clearSpeler();
+  LCD_clearDealer();
   if (!gameFinished) {
     clearLCD();
     printLCD_String(0, 0, "Dealer:");
@@ -60,7 +61,7 @@ void Game::startGame() {
     dealer->addKaart(kaart, true);
     kaart = trekKaart();
     spelers.front()->addKaart(kaart, true);
-    LCD_printKaarten();
+    LCD_printKaarten(true);
     if (spelers.front()->getWaardeKaarten() > 21 &&
         spelers.front()->checkForAce()) {
       spelers.front()->setWaardeKaart("A", 1);
@@ -83,22 +84,7 @@ void Game::startGame() {
     } else {
       kaart = trekKaart();
       dealer->addKaart(kaart);
-          kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
-    //     kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
-    //     kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
-    //     kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
-    //     kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
-    //     kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
-    //     kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
-    //     kaart = trekKaart();
-    // spelers.front()->addKaart(kaart, true);
+      kaart = trekKaart();
       Serial.print(
           ("[" + spelers.front()->getNaam() + "] - Jouw kaarten zijn: ")
               .c_str());
@@ -108,8 +94,11 @@ void Game::startGame() {
                          .c_str());
 
       while (!gameFinished && !stopGame) {
-        LCD_printKaarten();
+        LCD_printKaarten(true);
         vraagVoorInput();
+      }
+      if (gameFinished) {
+        LCD_printKaarten(false);
       }
     }
   }
@@ -155,20 +144,36 @@ void Game::resetGame() {
   for (auto kaart : speelkaarten) {
     kaart->setAlOpgegooid(false);
   }
+  if (LCD_getAchtersteLocatieDealer() < 13 &&
+      LCD_getAchtersteLocatieSpeler() <
+          20 - spelers.front()->getNaam().length()) {
+    clearLCD();
+  }
   uint16_t waardeKaartenSpeler = spelers.front()->getWaardeKaarten();
   uint16_t waardeKaartenDealer = dealer->getWaardeKaarten();
-  clearLCD();
-  if(waardeKaartenSpeler > waardeKaartenDealer && waardeKaartenSpeler <= 21){
+  if (waardeKaartenSpeler > waardeKaartenDealer && waardeKaartenSpeler <= 21) {
     LCD_printGewonnen();
-  } else if(waardeKaartenDealer > 21){
-        LCD_printGewonnen();
-  } else if(spelers.front()->getWaardeKaarten() == dealer->getWaardeKaarten()){
+  } else if (waardeKaartenDealer > 21) {
+    LCD_printGewonnen();
+  } else if (spelers.front()->getWaardeKaarten() ==
+                 dealer->getWaardeKaarten() &&
+             dealer->getWaardeKaarten() == 0) {
+
+  } else if (spelers.front()->getWaardeKaarten() ==
+             dealer->getWaardeKaarten()) {
     LCD_printGelijkspel();
-  } else if(waardeKaartenSpeler < waardeKaartenDealer && waardeKaartenDealer <= 21){
+  } else if (waardeKaartenSpeler < waardeKaartenDealer &&
+             waardeKaartenDealer <= 21) {
     LCD_printVerloren();
   } else {
     LCD_printVerloren();
-  } 
+  }
+  LCD_printKaarten(false);
+  if (LCD_getAchtersteLocatieDealer() > 13 &&
+      LCD_getAchtersteLocatieSpeler() >
+          20 - spelers.front()->getNaam().length()) {
+    clearLCD();
+  }
   for (auto speler : spelers) {
     speler->resetKaarten();
   }
@@ -191,10 +196,10 @@ std::shared_ptr<Card> Game::trekKaart() {
   uint16_t randomNummer;
   randomNummer = rand() % getTotalPlayingCards();
   std::shared_ptr<Card> gekozenKaart;
-  // gekozenKaart = speelkaarten.at(randomNummer);
   gekozenKaart = speelkaarten[randomNummer];
 
-  while (gekozenKaart->isAlOpgegooid()) { // Ga door tot je een kaart vindt die nog niet opgegooid is.
+  while (gekozenKaart->isAlOpgegooid()) { // Ga door tot je een kaart vindt die
+                                          // nog niet opgegooid is.
     randomNummer = rand() % getTotalPlayingCards();
     gekozenKaart = speelkaarten[randomNummer];
   }
